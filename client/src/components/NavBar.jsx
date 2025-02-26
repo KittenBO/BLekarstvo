@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { CgProfile } from "react-icons/cg";
 import { FaShoppingCart, FaCog, FaSignOutAlt } from 'react-icons/fa';
@@ -8,6 +8,7 @@ import { NavLink } from 'react-router-dom';
 import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/const';
 import { Context } from '../main';
 import { observer } from 'mobx-react-lite';
+import { check } from  '../http/userAPI'
 
 const NavBar = observer(() => {
   const [isOpenHamburger, setIsOpenHamburger] = useState(false);
@@ -18,6 +19,12 @@ const NavBar = observer(() => {
   const { user } = useContext(Context);
   const nodeRef = useRef(null);
 
+  const logOut = () => {
+    user.setUser({});
+    user.setIsAuth(false);
+    localStorage.removeItem('token');
+  }
+
   return (
     <header className="w-full bg-amber-50 text-orange-600">
       <ul className="flex container mx-auto py-4">
@@ -27,14 +34,23 @@ const NavBar = observer(() => {
         <div className='hidden md:flex text-xs lg:text-base gap-20 ml-auto items-center'>
           {user.isAuth ? (
             <>
-              <NavLink to={ADMIN_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md"><FaCog className='inline-block mx-1' />Админ-панель</NavLink>
-              <NavLink to={SHOP_ROUTE} onClick={() => user.setIsAuth(false)}  className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md"><FaSignOutAlt className='inline-block mx-1' />Выйти</NavLink>
-              <NavLink to={BASKET_ROUTE}  className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md"><FaShoppingCart className='inline-block mx-1' />Корзина</NavLink>
+              {user.role === "ADMIN" && (
+                <NavLink to={ADMIN_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                  <FaCog className='inline-block mx-1' />Админ-панель
+                </NavLink>
+              )}
+              <NavLink to={SHOP_ROUTE} onClick={logOut} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                <FaSignOutAlt className='inline-block mx-1' />Выйти
+              </NavLink>
+              <NavLink to={BASKET_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                <FaShoppingCart className='inline-block mx-1' />Корзина
+              </NavLink>
             </>
           ) : (
             <>
-              <NavLink to={ADMIN_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md"><FaCog className='inline-block mx-1' />Админ-панель</NavLink>
-              <NavLink to={LOGIN_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md"><CgProfile className='inline-block mx-1' />Авторизация/Регистрация</NavLink>
+              <NavLink to={LOGIN_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                <CgProfile className='inline-block mx-1' />Авторизация/Регистрация
+              </NavLink>
             </>
           )}
         </div>
@@ -50,17 +66,26 @@ const NavBar = observer(() => {
             <ul ref={nodeRef} className="absolute text-sm mt-5 bg-amber-50 top-full right-0 shadow-md rounded-md p-4 w-60 z-10">
               {user.isAuth ? (
                 <>
-                  <NavLink to={ADMIN_ROUTE} className="flex items-center"><FaCog className='inline-block mx-1' />Админ-панель</NavLink>
-                  <li className="border-t border-grayProfile my-1"></li>
-                  <NavLink to={SHOP_ROUTE}><FaSignOutAlt className='inline-block mx-1' />Выйти</NavLink>
-                  <li className="border-t border-grayProfile my-1"></li>
-                  <NavLink to={BASKET_ROUTE}><FaShoppingCart className='inline-block mx-1' />Корзина</NavLink>
+                  {/* Проверка роли перед отображением кнопки "Админ-панель" в мобильном меню */}
+                  {user.role === "ADMIN" && (
+                    <NavLink to={ADMIN_ROUTE} className="flex items-center">
+                      <FaCog className='inline-block mx=1' />Админ-панель
+                    </NavLink>
+                  )}
+                  <li className="border-t border-grayProfile my=1"></li>
+                  <NavLink to={SHOP_ROUTE} onClick={logOut}>
+                    <FaSignOutAlt className='inline-block mx=1' />Выйти
+                  </NavLink>
+                  <li className="border-t border-grayProfile my=1"></li>
+                  <NavLink to={BASKET_ROUTE}>
+                    <FaShoppingCart className='inline-block mx=1' />Корзина
+                  </NavLink>
                 </>
               ) : (
                 <>
-                  <NavLink to={ADMIN_ROUTE} className="flex items-center"><FaCog className='inline-block mx-1' />Админ-панель</NavLink>
-                  <li className="border-t border-grayProfile my-1"></li>
-                  <NavLink to={LOGIN_ROUTE}><CgProfile className='inline-block mx-1' />Авторизация/Регистрация</NavLink>
+                  <NavLink to={LOGIN_ROUTE}>
+                    <CgProfile className='inline-block mx=1' />Авторизация/Регистрация
+                  </NavLink>
                 </>
               )}
             </ul>

@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Device, DeviceInfo } from "../models/models.js";
@@ -65,6 +66,76 @@ class deviceController {
         );
         res.json(device);
     }
+
+    async delete(req, res, next) {
+        try {
+            const { id } = req.params; 
+            const device = await Device.findOne({ where: { id } });
+
+            if (!device) {
+                return next(ApiError.badRequest('Устройство не найдено'));
+            }
+
+            const imgPath = path.resolve(__dirname, '..', 'static', device.img);
+
+            fs.unlink(imgPath, (err) => {
+                if (err) {
+                    console.error('Ошибка при удалении изображения:', err);
+                }
+            });
+
+            await Device.destroy({
+                where: { id }
+            });
+
+            await DeviceInfo.destroy({ where: { deviceId: id } });
+
+            return res.json({ message: 'Устройство успешно удалено' });
+        } catch (e) {
+            console.error(e);
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async put(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { name, price, brandId, typeId, info } = req.body;
+    
+            const device = await Device.findOne({ where: { id } });
+            if (!device) {
+                return next(ApiError.badRequest('Устройство не найдено'));
+            }
+            let imgPath = device.img;
+            if (req.files && req.files.img) {
+                const img = req.files.img; 
+                imgPath = uuidv4() + '.jpg';
+                img.mv(path.resolve(__dirname, '..', 'static', imgPath));
+            }
+    
+            // Обновляем устройство с новыми данными
+            await Device.update({ name, price, brandId, typeId, img: imgPath }, { where: { id } });
+    
+            if (info) {
+                const parsedInfo = JSON.parse(info);
+                await DeviceInfo.destroy({ where: { deviceId: id } });
+                
+                parsedInfo.forEach(i => {
+                    DeviceInfo.create({
+                        title: i.title,
+                        description: i.description,
+                        deviceId: id
+                    });
+                });
+            }
+    
+            return res.json({ message: 'Устройство успешно обновлено' });
+        } catch (e) {
+            console.error(e);
+            next(ApiError.internal(e.message));
+        }
+    }
+    
 }
 
 export default new deviceController();
