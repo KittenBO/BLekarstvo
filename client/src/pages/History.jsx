@@ -3,11 +3,24 @@ import { FaPen } from 'react-icons/fa';
 import { Context } from '../main';
 import { getHistory } from '../http/historyAPI';
 import { fetchOneDevice, fetchBrands, fetchTypes } from '../http/deviceAPI';
+import { AddRatingModal } from '../components/AddRatingModal';
 
 const History = () => {
     const [orders, setOrders] = useState([]);
     const { device: deviceStore } = useContext(Context);
     const [devicesInfo, setDevicesInfo] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [deviceIdToRate, setDeviceIdToRate] = useState(null);
+
+    const openModal = (deviceId) => {
+        setDeviceIdToRate(deviceId);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setDeviceIdToRate(null);
+    };
 
     useEffect(() => {
         fetchTypes().then(data => deviceStore.setTypes(data));
@@ -56,7 +69,8 @@ const History = () => {
                             <p>Общая стоимость: {order.totalPrice}₽</p>
                             <p>Статус: {order.status}</p>
                         </div>
-                        <button className="bg-amber-200 text-orange-600 py-1.5 px-3 rounded-sm shadow-md mx-10">
+                        <button className="bg-amber-200 text-orange-600 py-1.5 px-3 rounded-sm shadow-md mx-10"
+                        onClick={() => openModal(order.deviceId)}>
                             <FaPen className='inline-block mx-2' />Оставить отзыв
                         </button>
                     </div>
@@ -67,6 +81,14 @@ const History = () => {
                 </div>
                 }
             </div>
+            {isModalOpen && (
+                <AddRatingModal 
+                    isOpen={isModalOpen} 
+                    onClose={closeModal} 
+                    info={devicesInfo[deviceIdToRate]} 
+                    deviceStore={deviceStore}
+                />
+            )}
         </div>
     );
 };
