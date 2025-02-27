@@ -19,16 +19,6 @@ const Auth = observer(() => {
 
     const { user } = useContext(Context);
 
-    useEffect(() => {
-        if (user.isAuth) {
-            if (user.role === 'ADMIN') {
-                navigate(ADMIN_ROUTE);
-            } else {
-                navigate(SHOP_ROUTE);
-            }
-        }
-    }, [user.isAuth, user.role]); 
-
     const click = async () => {
         let data;
         try {
@@ -45,7 +35,10 @@ const Auth = observer(() => {
             }
             user.setUser(data.user);
             user.setRole(data.role);
+            console.log(data.role)
             user.setIsAuth(true);
+            navigate(SHOP_ROUTE);
+            window.location.reload();  
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
             setTooltipVisible(true);

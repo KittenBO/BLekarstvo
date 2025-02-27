@@ -1,11 +1,11 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { CgProfile } from "react-icons/cg";
-import { FaShoppingCart, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaShoppingCart, FaCog, FaSignOutAlt, FaHistory } from 'react-icons/fa';
 import { MdLocalPharmacy } from 'react-icons/md';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { NavLink } from 'react-router-dom';
-import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/const';
+import { ADMIN_ROUTE, BASKET_ROUTE, HISTORY_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/const';
 import { Context } from '../main';
 import { observer } from 'mobx-react-lite';
 import { check } from  '../http/userAPI'
@@ -23,6 +23,7 @@ const NavBar = observer(() => {
     user.setUser({});
     user.setIsAuth(false);
     localStorage.removeItem('token');
+    window.location.reload();  
   }
 
   return (
@@ -45,6 +46,9 @@ const NavBar = observer(() => {
               <NavLink to={BASKET_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
                 <FaShoppingCart className='inline-block mx-1' />Корзина
               </NavLink>
+              <NavLink to={HISTORY_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                <FaHistory className='inline-block mx-1' />История заказов
+              </NavLink>
             </>
           ) : (
             <>
@@ -66,7 +70,6 @@ const NavBar = observer(() => {
             <ul ref={nodeRef} className="absolute text-sm mt-5 bg-amber-50 top-full right-0 shadow-md rounded-md p-4 w-60 z-10">
               {user.isAuth ? (
                 <>
-                  {/* Проверка роли перед отображением кнопки "Админ-панель" в мобильном меню */}
                   {user.role === "ADMIN" && (
                     <NavLink to={ADMIN_ROUTE} className="flex items-center">
                       <FaCog className='inline-block mx=1' />Админ-панель

@@ -3,7 +3,9 @@ import { Basket } from './pages/Basket';
 import SHOP from './pages/Shop';
 import Auth from './pages/Auth';
 import DevicePage from './pages/DevicePage';
-import { ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from './utils/const'
+import History from './pages/History';
+import { ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, HISTORY_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from './utils/const'
+import { Component } from 'react';
 
 export const authRoutes = [
     {
@@ -13,6 +15,10 @@ export const authRoutes = [
     {
         path: BASKET_ROUTE,
         Component: Basket
+    },
+    {
+        path: HISTORY_ROUTE,
+        Component: History
     }
 ]
 

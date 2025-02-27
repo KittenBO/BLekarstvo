@@ -1,12 +1,16 @@
 import { useEffect, useState, useContext } from 'react';
 import { Context } from '../main';
 import { FaTrash } from 'react-icons/fa';
-import { getBasket, updateBasketItem, removeFromBasket } from '../http/basketAPI';
+import Tooltip from '../components/ToolTip';
+import { getBasket, updateBasketItem, removeFromBasket, clearBasket } from '../http/basketAPI';
 import { fetchBrands, fetchTypes } from '../http/deviceAPI';
+import { addToHistory } from '../http/historyAPI';
 
 export const Basket = () => {
     const [devices, setDevices] = useState([]);
     const { device: deviceStore } = useContext(Context);
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');
 
     useEffect(() => {
         fetchTypes().then(data => deviceStore.setTypes(data));
@@ -49,8 +53,35 @@ export const Basket = () => {
         }
     }
 
+    const addHistory = async () => {
+        try {
+            const orders = devices.map(item => ({
+                deviceId: item.device.id,
+                quantity: item.quantity,
+                totalPrice: item.device.price * item.quantity,
+                status: "Успешно",
+            }));
+
+            await Promise.all(orders.map(order => addToHistory(order.deviceId, order.quantity, order.totalPrice, order.status)));
+            await clearBasket();
+            setTooltipMessage('Товар успешно оплачен. Подробности можно узнать в истории заказов.');
+            setTooltipVisible(true);
+            setDevices([]);
+        } catch(error) {
+            setTooltipMessage(`Ошибка при добавлении в корзину: ${error.response?.data?.message || error.message}`);
+            setTooltipVisible(true);
+        }
+    }
+
     return (
         <div className="container mx-auto flex mt-10 text-xs md:text-base">
+            {tooltipVisible && (
+                <Tooltip 
+                    message={tooltipMessage} 
+                    duration={3000} 
+                    onClose={() => setTooltipVisible(false)} 
+                />
+            )}
             <div className="w-2/3 pr-4 mx-1">
                 {devices.length > 0 ? devices.map((item) => (
                     <div key={item.id} className="flex items-center border-b py-4">
@@ -106,7 +137,7 @@ export const Basket = () => {
                         </span>
                     </p>
                 </div>
-                <button id="checkout" className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full">Оплатить</button>
+                <button id="checkout" className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full" onClick={addHistory}>Оплатить</button>
             </div>
         </div>
     );

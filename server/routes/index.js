@@ -7,6 +7,7 @@ import { brandRouter } from './brandRouter.js';
 import { deviceRouter } from './deviceRouter.js';
 import { basketRouter } from './basketRouter.js';
 import { ratingRouter } from './ratingRouter.js';
+import { historyRouter } from './historyRouter.js';
 
 router.use('/user', userRouter )
 router.use('/type', typeRouter )
@@ -14,3 +15,4 @@ router.use('/brand', brandRouter )
 router.use('/device', deviceRouter )
 router.use('/basket', basketRouter )
 router.use('/rating', ratingRouter )
+router.use('/history', historyRouter )
