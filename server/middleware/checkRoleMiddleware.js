@@ -1,5 +1,5 @@
 import { ApiError } from "../error/apiError.js"
-import jwt from 'jsonwebtoken'
+import tokenService from "../service/tokenService.js"
 
 export default function (role) {
     return function (req, res, next) {
@@ -11,8 +11,8 @@ export default function (role) {
             if (!token) {
                 next(ApiError.notAuthorized('Не авторизован'))
             }
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            if (decoded.role !== role) {
+            const decoded = tokenService.validateAccessToken(token);
+            if (decoded.data.role !== role) {
                 next(ApiError.forbidden('Недостаточно прав'))
             }
             req.user = decoded

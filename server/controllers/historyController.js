@@ -4,7 +4,7 @@ import { ApiError } from '../error/apiError.js';
 class HistoryController {
     async getHistory(req, res, next) {
         try {
-            const userId = req.user.id;
+            const userId = req.user.data.id;
             if (!userId) {
                 return next(ApiError.unauthorized('Пользователь не авторизован.'));
             }
@@ -23,7 +23,7 @@ class HistoryController {
     async addToHistory (req, res, next) {
         try {
             const { deviceId, quantity, totalPrice, status } = req.body;
-            const userId = req.user.id;
+            const userId = req.user.data.id;
     
             if (!deviceId || !quantity || !totalPrice || !status) {
                 return next(ApiError.badRequest('Неверно введены данные.'));

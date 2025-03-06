@@ -3,7 +3,7 @@ import { ApiError } from "../error/apiError.js";
 
 class BasketController {
     async getBasket(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.data.id;
         const basket = await Basket.findOne({ where: { userId } });
         
         if (!basket) {
@@ -19,7 +19,7 @@ class BasketController {
     }
 
     async addToBasket(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.data.id;
         const { deviceId, quantity } = req.body;
 
         const device = await Device.findOne({ where: { id: deviceId } });
@@ -51,7 +51,7 @@ class BasketController {
     }
 
     async removeFromBasket(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.data.id;
         const { deviceId } = req.body;
     
         const basket = await Basket.findOne({ where: { userId } });
@@ -76,7 +76,7 @@ class BasketController {
     }    
 
     async clearBasket(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.data.id;
         const basket = await Basket.findOne({ where: { userId } });
 
         if (basket) {
@@ -88,7 +88,7 @@ class BasketController {
     }
     
     async updateBasketItem(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.data.id;
         const { deviceId, quantity } = req.body;
     
         const basket = await Basket.findOne({ where: { userId } });

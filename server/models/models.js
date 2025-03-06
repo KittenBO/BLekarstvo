@@ -6,6 +6,17 @@ export const User = Sequelize.define('user', {
     email: { type: DataTypes.STRING, unique: true },
     password: { type: DataTypes.STRING },
     role: { type: DataTypes.STRING, defaultValue: 'USER' },
+    isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
+    activationLink: { type: DataTypes.STRING },
+});
+export const Token = Sequelize.define('token', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    userId: { 
+        type: DataTypes.INTEGER, 
+        allowNull: false, 
+        references: { model: User, key: 'id' } 
+    },
+    refreshToken: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Basket = Sequelize.define('basket', {
@@ -65,6 +76,10 @@ Basket.belongsTo(User);
 
 User.hasMany(Rating);
 Rating.belongsTo(User);
+
+User.hasOne(Token);
+Token.belongsTo(User);
+
 
 Basket.hasMany(BasketDevice);
 BasketDevice.belongsTo(Basket);

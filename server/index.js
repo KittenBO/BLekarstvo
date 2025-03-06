@@ -1,7 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
+import cookieParser from 'cookie-parser';
 import Sequelize  from './db.js'
-import { User, Basket, BasketDevice, Device, Type, Brand, Rating, DeviceInfo, TypeBrand } from './models/models.js';
 import { router }  from './routes/index.js';
 import errorHandlingMidlleware from './middleware/errorHandlingMidlleware.js';
 import fileUpload from 'express-fileupload';
@@ -13,8 +13,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors())
 app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}));
 app.use('/api', router);

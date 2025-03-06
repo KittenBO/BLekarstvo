@@ -1,5 +1,5 @@
 import { ApiError } from "../error/apiError.js"
-import jwt from 'jsonwebtoken'
+import tokenService from "../service/tokenService.js"
 
 export default function (req, res, next) {
     if (req.method === 'OPTIONS') {
@@ -10,8 +10,11 @@ export default function (req, res, next) {
         if (!token) {
             next(ApiError.notAuthorized('Не авторизован'))
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        req.user = decoded
+        const userData = tokenService.validateAccessToken(token);
+        if (!userData) {
+            next(ApiError.notAuthorized('Не корректный токен'))
+        }
+        req.user = userData;
         next()
 
     } catch(e) {

@@ -8,7 +8,6 @@ import { NavLink } from 'react-router-dom';
 import { ADMIN_ROUTE, BASKET_ROUTE, HISTORY_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/const';
 import { Context } from '../main';
 import { observer } from 'mobx-react-lite';
-import { check } from  '../http/userAPI'
 
 const NavBar = observer(() => {
   const [isOpenHamburger, setIsOpenHamburger] = useState(false);
@@ -20,14 +19,12 @@ const NavBar = observer(() => {
   const nodeRef = useRef(null);
 
   const logOut = () => {
-    user.setUser({});
-    user.setIsAuth(false);
-    localStorage.removeItem('token');
+    user.logout();
     window.location.reload();  
   }
 
   return (
-    <header className="w-full bg-amber-50 text-orange-600">
+    <header className="w-full bg-amber-50 text-orange-600 relative">
       <ul className="flex container mx-auto py-4">
         <NavLink to={SHOP_ROUTE} className='text-3xl font-thin'>
             <MdLocalPharmacy className='inline-block mx-1 -mt-1' />БЛекарство
@@ -95,6 +92,11 @@ const NavBar = observer(() => {
           </CSSTransition>
         </div>
       </ul>
+      {!user.isActivated && user.isAuth && (
+        <div className="bg-orange-100 text-orange-600 text-center py-2 w-full">
+          Почта не активированна, на вашу почту {user.user.email} отправленно письмо, перейдите по сыллке.
+        </div>
+      )}
     </header>
   );
 })

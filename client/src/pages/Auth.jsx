@@ -1,8 +1,7 @@
 import { MdLocalPharmacy } from 'react-icons/md';
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from 'react';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, ADMIN_ROUTE } from '../utils/const';
-import { registration, login } from '../http/userAPI';
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../utils/const';
 import Tooltip from '../components/ToolTip';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../main';
@@ -23,22 +22,18 @@ const Auth = observer(() => {
         let data;
         try {
             if (isLogin) {
-                data = await login(email, password);
+                data = await user.login(email, password);
             } else {
                 if (password !== confirmPassword) {
                     setTooltipMessage('Пароли не совпадают!');
                     setTooltipVisible(true);
                     return;
                 }
-                data = await registration(email, password);
+                data = await user.registration(email, password)
                 setTooltipMessage(data.message || 'Проверьте вашу почту для подтверждения.');
             }
-            user.setUser(data.user);
-            user.setRole(data.role);
-            console.log(data.role)
-            user.setIsAuth(true);
             navigate(SHOP_ROUTE);
-            window.location.reload();  
+             
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
             setTooltipVisible(true);

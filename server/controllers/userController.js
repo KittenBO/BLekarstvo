@@ -1,50 +1,82 @@
 import { ApiError } from "../error/apiError.js";
-import bcryp from "bcrypt";
-import jwt from "jsonwebtoken";
-import { User, Basket } from "../models/models.js";
+import userService from "../service/userService.js";
+import { validationResult } from "express-validator";
 
-
-const generateJWT = (id, email, role) => {
-    return jwt.sign({id, email: email, role},
-        process.env.JWT_SECRET,
-        {expiresIn: '24h'}
-    );
-}
 class userController {
     async registration(req, res, next) {
-        const {email, password, role} = req.body;
-        if (!email || !password) {
-            return next(ApiError.badRequest('Не задан email или password'))
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return next(ApiError.badRequest('Некорректный email или пароль слишком мал(менее 6 символов)'))
+            }
+            const {email, password } = req.body;
+            const userData = await userService.registration(email, password);
+            res.cookie('RefreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly:true});
+
+            return res.json(userData);
+        } catch(error){
+            return next(ApiError.badRequest(`${error}`))
         }
-        const candidate = await User.findOne({where: {email}})
-        if (candidate) {
-            return next(ApiError.badRequest('Пользователь с таким email уже существует'))
+    }
+
+    async activate(req, res, next) {
+        try{
+            const activationLink = req.params.link;
+            await userService.activate(activationLink);
+            return res.redirect(process.env.CLIENT_URL);
+        } catch(error){
+            return next(ApiError.badRequest(`${error}`))
         }
-        const hashPassword = await bcryp.hash(password, 5);
-        const user = await User.create({email, role, password: hashPassword});
-        const basket = await Basket.create({userId: user.id});
-        const token = generateJWT(user.id, user.email, user.role);
-        return res.json({token})
     }
 
     async login(req, res, next) {
-        const {email, password} = req.body;
-        const user = await User.findOne({where: {email}});
-        if (!user) {
-            return next(ApiError.internal('Пользователь с таким email не существует'))
+        try {
+            const { email, password } = req.body;
+            const userData = await userService.login(email, password);
+            res.cookie('RefreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+            return res.json(userData);
+        } catch (error) {
+            console.error('Ошибка при логине:', error);
+            return next(ApiError.badRequest(`${error}`));
         }
-        let comparePassword = bcryp.compareSync(password, user.password);
-        if (!comparePassword) {
-            return next(ApiError.internal('Неверный email или пароль'))
+    }
+    
+
+    async logout(req, res, next) {
+        try {
+            const { RefreshToken } = req.cookies;
+            const token = await userService.logout(RefreshToken);
+            res.clearCookie('RefreshToken');
+            return res.json(token);
+        } catch(error) {
+            return next(ApiError.badRequest(`${error}`)) 
         }
-        const token = generateJWT(user.id, user.email, user.role);
-        return res.json({token})
+
     }
 
-    async check(req, res, next) {
-        const token = generateJWT(req.user.id, req.user.email, req.user.role)
-        return res.json({token})
+    async refresh(req, res, next) {
+       try {
+            const { RefreshToken } = req.cookies;
+            const userData = await userService.refresh(RefreshToken);
+            res.cookie('RefreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly:true});
+            return res.json(userData);
+        } catch(error) {
+            return next(ApiError.internal(`${error}`)) 
+        } 
     }
+
+    async getUsers(req, res, next) {
+        try {
+            const users = await userService.getAllUsers();
+            return res.json(users)
+        } catch(error) {
+            return next(ApiError.internal(`${error}`)) 
+        }
+    }
+
 }
 
 export default new userController();

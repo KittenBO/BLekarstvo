@@ -9,8 +9,9 @@ import EditDevice from '../components/EditDevice';
 import Tooltip from '../components/ToolTip';
 import { SHOP_ROUTE } from '../utils/const';
 import { addToBasket } from '../http/basketAPI';
+import { observer } from 'mobx-react-lite';
 
-export default function DevicePage() {
+const DevicePage = observer(() => {
     const [device, setDevice] = useState({info: []});
     const { id } = useParams();
     const navigate = useNavigate();
@@ -167,4 +168,6 @@ export default function DevicePage() {
             />
         </div>
     );
-}
+})
+
+export default DevicePage;

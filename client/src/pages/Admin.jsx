@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CreateType } from '../components/CreateType';
 import { CreateBrand } from '../components/CreateBrand';
 import { CreateDevice } from '../components/CreateDevice';
+import { GetUsers } from '../components/GetUsers';
 
 
 function Admin() {
@@ -16,6 +17,10 @@ function Admin() {
     const [isModalDeviceOpen, setIsModalDeviceOpen] = useState(false);
     const openDeviceModal = () => setIsModalDeviceOpen(true);
     const closeDeviceModal = () => setIsModalDeviceOpen(false);
+
+    const [isModalUsersOpen, setIsModalUsersOpen] = useState(false);
+    const openUsersModal = () => setIsModalUsersOpen(true);
+    const closeUsersModal = () => setIsModalUsersOpen(false);
 
     return (  
         <>
@@ -38,10 +43,17 @@ function Admin() {
                 >
                     Добавить новый товар
                 </button>
+                <button 
+                    className="w-3/4 sm:w-1/2 xl:w-1/5 bg-amber-200 text-orange-600 py-2 rounded"
+                    onClick={openUsersModal}
+                >
+                    Список всех авторизированных пользователей
+                </button>
                 
                 <CreateType isOpen={isModalTypeOpen} onClose={closeTypeModal} />
                 <CreateBrand isOpen={isModalBrandOpen} onClose={closeBrandModal} />
                 <CreateDevice isOpen={isModalDeviceOpen} onClose={closeDeviceModal} />
+                <GetUsers isOpen={isModalUsersOpen} onClose={closeUsersModal} />
             </div>
         </>
     );
