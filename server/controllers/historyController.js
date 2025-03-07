@@ -1,21 +1,20 @@
-import { OrderHistory } from '../models/models.js';
 import { ApiError } from '../error/apiError.js';
+import historyService from '../service/historyService.js';
 
 class HistoryController {
     async getHistory(req, res, next) {
         try {
             const userId = req.user.data.id;
             if (!userId) {
-                return next(ApiError.unauthorized('Пользователь не авторизован.'));
+                return next(ApiError.notAuthorized('Пользователь не авторизован.'));
             }
-    
-            const orders = await OrderHistory.findAll({ where: { userId } });
+            const orders = await historyService.getHistory(userId)
             if (orders.length === 0) {
-                return res.status(204).json({ message: 'Нет данных' });
+                return res.status(204).json({ message: 'Нет данных о истории заказов.' });
             }
-            res.json(orders);
-        } catch (error) {
-            next(ApiError.internal(error.message));
+            return res.json(orders);
+        } catch (e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
     };
     
@@ -28,11 +27,10 @@ class HistoryController {
             if (!deviceId || !quantity || !totalPrice || !status) {
                 return next(ApiError.badRequest('Неверно введены данные.'));
             }
-    
-            const newOrder = await OrderHistory.create({ userId, deviceId, quantity, totalPrice, status });
-            res.status(201).json(newOrder);
-        } catch (error) {
-            next(ApiError.internal(error.message));
+            await historyService.addToHistory(userId, deviceId, quantity, totalPrice, status);
+            return res.json({ message: 'Успешно.' });
+        } catch (e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
     };
 }

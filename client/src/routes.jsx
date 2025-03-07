@@ -5,7 +5,6 @@ import Auth from './pages/Auth';
 import DevicePage from './pages/DevicePage';
 import History from './pages/History';
 import { ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, HISTORY_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from './utils/const'
-import { Component } from 'react';
 
 export const authRoutes = [
     {

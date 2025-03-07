@@ -3,9 +3,10 @@ import { CreateType } from '../components/CreateType';
 import { CreateBrand } from '../components/CreateBrand';
 import { CreateDevice } from '../components/CreateDevice';
 import { GetUsers } from '../components/GetUsers';
+import { observer } from 'mobx-react-lite';
 
 
-function Admin() {
+const Admin = observer(() => {
     const [isModalTypeOpen, setIsModalTypeOpen] = useState(false);
     const openTypeModal = () => setIsModalTypeOpen(true);
     const closeTypeModal = () => setIsModalTypeOpen(false);
@@ -44,7 +45,7 @@ function Admin() {
                     Добавить новый товар
                 </button>
                 <button 
-                    className="w-3/4 sm:w-1/2 xl:w-1/5 bg-amber-200 text-orange-600 py-2 rounded"
+                    className="w-3/4 sm:w-1/2 xl:w-1/5 bg-amber-200 text-orange-600 py-2 rounded my-12"
                     onClick={openUsersModal}
                 >
                     Список всех авторизированных пользователей
@@ -57,6 +58,6 @@ function Admin() {
             </div>
         </>
     );
-}
+});
 
 export default Admin;

@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import UserService from '../services/UserService';
+import Tooltip from './ToolTip';
 
 export const GetUsers = ({ isOpen, onClose }) => {
     const [users, setUsers] = useState([]);
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');   
 
     async function getUsers() {
         try {
             const response = await UserService.fetchUsers();
-            console.log(response)
             setUsers(response.data);
         } catch(e) {
-            console.log(e);
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipVisible(true);
         }
     }
 
@@ -18,6 +21,13 @@ export const GetUsers = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        {tooltipVisible && (
+            <Tooltip 
+                message={tooltipMessage} 
+                duration={3000} 
+                onClose={() => setTooltipVisible(false)} 
+            />
+        )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-2/3">
                 <span 
                     className="cursor-pointer text-lg float-right" 

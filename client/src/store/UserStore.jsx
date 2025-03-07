@@ -87,7 +87,6 @@ export default class UserStore {
         this.setLoading(true);
         try {
             const responce = await axios.get(`${import.meta.env.VITE_API_URL }api/user/auth`, {withCredentials: true});
-            console.log(responce)
             localStorage.setItem('token', responce.data.accessToken);
             this.setIsAuth(true);
             this.setUser(responce.data.user);

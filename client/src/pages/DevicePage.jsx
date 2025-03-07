@@ -18,7 +18,7 @@ const DevicePage = observer(() => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const { device: deviceStore } = useContext(Context);
-
+    const { user } = useContext(Context);
     const typeName = deviceStore.types.find(type => type.id === device.typeId)?.name || 'Не указано';
     const brandName = deviceStore.brands.find(brand => brand.id === device.brandId)?.name || 'Не указано';
 
@@ -30,6 +30,7 @@ const DevicePage = observer(() => {
             await deleteDevice(device.id);
             setIsDeleteModalOpen(false);
             navigate(SHOP_ROUTE)
+            window.location.reload();
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
             setTooltipVisible(true);
@@ -132,6 +133,7 @@ const DevicePage = observer(() => {
                         </div>
                     )}
                 </div>
+                {user.role == 'ADMIN' &&
                 <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center text-lg">
                         <button 
@@ -151,7 +153,8 @@ const DevicePage = observer(() => {
                         <FaRegStar className="mr-1" />
                         <span>{device.rating}</span>
                     </div>
-                </div>                
+                </div>
+                }                
             </div>
 
             <DeleteDevice 

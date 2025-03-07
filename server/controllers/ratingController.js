@@ -3,13 +3,11 @@ import { ApiError } from "../error/apiError.js";
 
 class RatingController {
     async addRating(req, res, next) {
-        const { deviceId, rate, userId } = req.body;
-
-        if (!deviceId || !rate || rate < 1 || rate > 5) {
-            return next(ApiError.badRequest('Неверно введены данные.'));
-        }
-
         try {
+            const { deviceId, rate, userId } = req.body;
+            if (!deviceId || !rate || rate < 1 || rate > 5) {
+                return next(ApiError.badRequest('Обязательные для заполнения данные не указанны'));
+            }
             const existingRating = await Rating.findOne({ where: { deviceId, userId } });
 
             const user = await User.findByPk(userId);
@@ -29,13 +27,9 @@ class RatingController {
             device.rating = averageRate;
             await device.save();
 
-            return res.status(201).json({
-                message: 'Рейтинг добавлен',
-                rating: newRating,
-                averageRate,
-            });
+            return res.json({ message: 'Успешно.' });
         } catch (e) {
-            return next(ApiError.internal(e.message));
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
     }
 }

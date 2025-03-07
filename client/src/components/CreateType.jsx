@@ -1,18 +1,39 @@
 import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { createType } from '../http/deviceAPI';
+import Tooltip from './ToolTip';
 
-export const CreateType = ({ isOpen, onClose }) => {
+export const CreateType = observer(({ isOpen, onClose }) => {
     const [typeName, setTypeName] = useState('');
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');
 
-    const handleAddType = () => {
-        createType({name: typeName}).then(data => setTypeName(''));
-        onClose();
+    const handleAddType = async () => {
+        try {
+            if (!typeName) {
+                setTooltipMessage(`Произошла ошибка. Название не указанно`);
+                return setTooltipVisible(true); 
+            }
+            createType({name: typeName}).then(data => setTypeName(''));
+            onClose();
+            window.location.reload();
+        } catch (e) {
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipVisible(true);
+        }
     };
 
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        {tooltipVisible && (
+        <Tooltip 
+            message={tooltipMessage} 
+            duration={3000} 
+            onClose={() => setTooltipVisible(false)} 
+        />
+        )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
                 <span 
                     className="cursor-pointer text-lg float-right" 
@@ -37,4 +58,4 @@ export const CreateType = ({ isOpen, onClose }) => {
             </div>
         </div>
     );
-};
+});

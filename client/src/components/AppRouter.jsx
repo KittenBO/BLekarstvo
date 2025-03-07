@@ -7,18 +7,19 @@ import { Context } from '../main';
 import { observer } from 'mobx-react-lite';
 
 const AppRouter = observer(() => {
-    const {user} = useContext(Context)
+    const { user } = useContext(Context);
+
     return (
         <Routes>
-            {user.isAuth && authRoutes.map(({ path, Component}) => 
+            {user.isAuth && authRoutes.map(({ path, Component }) => 
                 <Route key={path} path={path} element={<Component />} exact/>
             )}
-            {publicRoutes.map(({ path, Component}) => 
+            {publicRoutes.map(({ path, Component }) => 
                 <Route key={path} path={path} element={<Component />} exact/>
             )}
             <Route path="*" element={<Navigate to={SHOP_ROUTE} />}/>
         </Routes>
     );
-})
+});
 
 export default AppRouter;

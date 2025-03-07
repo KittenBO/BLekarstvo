@@ -2,19 +2,27 @@ import { useState, useContext, useEffect } from 'react';
 import { Context } from '../main';
 import { createDevice, fetchBrands, fetchDevices, fetchTypes } from "../http/deviceAPI";
 import { FaChevronDown } from 'react-icons/fa';
+import Tooltip from './ToolTip';
 
 export const CreateDevice = ({ isOpen, onClose }) => {
     const { device } = useContext(Context);
 
     useEffect(() => {
-        fetchTypes().then(data => device.setTypes(data))
-        fetchBrands().then(data => device.setBrands(data))
-        fetchDevices().then(data => device.setDevices(data.rows))
+        try{
+            fetchTypes().then(data => device.setTypes(data))
+            fetchBrands().then(data => device.setBrands(data))
+            fetchDevices().then(data => device.setDevices(data.rows))
+        } catch(e) {
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
+            setTooltipVisible(true);
+        }
     }, [])
 
     const [deviceName, setDeviceName] = useState('');
     const [price, setPrice] = useState('');
     const [imgFile, setImgFile] = useState(null);
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');
     
     const [info, setInfo] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
@@ -25,22 +33,30 @@ export const CreateDevice = ({ isOpen, onClose }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleAddDevice = () => {
-        console.log('Добавлен Девайс:', deviceName, selectedType, selectedBrand, price, imgFile, info);
-        const formData = new FormData();
-        formData.append('name', deviceName);
-        formData.append('price', price);
-        formData.append('typeId', selectedType.id);
-        formData.append('brandId', selectedBrand.id);
-        formData.append('img', imgFile);
-        formData.append('info', JSON.stringify(info));
-        createDevice(formData).then(data => onClose());
-        
-        setDeviceName('');
-        setPrice('');
-        setImgFile(null);
-        setInfo([]);
-        setSelectedType(null);
-        setSelectedBrand(null);
+        try {
+            if (!deviceName || !price || !selectedType || !selectedBrand || !imgFile) {
+                setTooltipMessage(`Произошла ошибка. Обязательные данные не введены`);
+                return setTooltipVisible(true);
+            }
+            const formData = new FormData();
+            formData.append('name', deviceName);
+            formData.append('price', price);
+            formData.append('typeId', selectedType.id);
+            formData.append('brandId', selectedBrand.id);
+            formData.append('img', imgFile);
+            formData.append('info', JSON.stringify(info));
+            createDevice(formData).then(data => onClose());
+            setDeviceName('');
+            setPrice('');
+            setImgFile(null);
+            setInfo([]);
+            setSelectedType(null);
+            setSelectedBrand(null);
+            window.location.reload();
+        } catch(e) {
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
+            setTooltipVisible(true);
+        }
     };
 
     const toggleDropdownType = () => {
@@ -83,6 +99,13 @@ export const CreateDevice = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        {tooltipVisible && (
+            <Tooltip 
+                message={tooltipMessage} 
+                duration={3000} 
+                onClose={() => setTooltipVisible(false)} 
+            />
+        )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[90vh] overflow-y-auto">
                 <span 
                     className="cursor-pointer text-lg float-right" 

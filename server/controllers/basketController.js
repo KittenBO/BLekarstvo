@@ -1,121 +1,91 @@
-import { Basket, BasketDevice, Device } from "../models/models.js";
+import { Basket, User } from "../models/models.js";
 import { ApiError } from "../error/apiError.js";
+import basketService from "../service/basketService.js";
 
 class BasketController {
-    async getBasket(req, res) {
-        const userId = req.user.data.id;
-        const basket = await Basket.findOne({ where: { userId } });
-        
-        if (!basket) {
-            return res.json({ devices: [] });
-        }
-
-        const devices = await BasketDevice.findAll({
-            where: { basketId: basket.id },
-            include: [{ model: Device }]
-        });
-
-        return res.json(devices);
+    async getBasket(req, res, next) {
+        try {
+            const userId = req.user.data.id;
+            const basket = await Basket.findOne({ where: { userId } });
+            if (!userId) {
+                return next(ApiError.badRequest('Пользователь не зарегистрирован'));
+            }
+            if (!basket) {
+                return next(ApiError.badRequest('Корзина не найдена'));
+            }
+            const devices = await basketService.getOneBasket(basket);
+            return res.json(devices);
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }   
     }
 
-    async addToBasket(req, res) {
-        const userId = req.user.data.id;
-        const { deviceId, quantity } = req.body;
-
-        const device = await Device.findOne({ where: { id: deviceId } });
-        if (!device) {
-            return res.status(404).json({ message: 'Устройство не найдено' });
-        }
-
-        let basket = await Basket.findOne({ where: { userId } });
-
-        if (!basket) {
-            basket = await Basket.create({ userId });
-        }
-
-        const basketDevice = await BasketDevice.findOne({
-            where: {
-                basketId: basket.id,
-                deviceId
+    async addToBasket(req, res, next) {
+        try {
+            const userId = req.user.data.id;
+            const { deviceId, quantity } = req.body;
+            const user = await User.findOne({ where: { id: userId } });
+            if (!user.isActivated) {
+                return next(ApiError.badRequest('Для этого вам необходимо подтвердить свой аккаунт.'));
             }
-        });
-
-        if (basketDevice) {
-            basketDevice.quantity += quantity;
-            await basketDevice.save();
-        } else {
-            await BasketDevice.create({ basketId: basket.id, deviceId, quantity });
+            if (!userId) {
+                return next(ApiError.badRequest('Пользователь не зарегистрирован'));
+            }
+            if (!deviceId || !quantity) {
+                return next(ApiError.notFound('Ошибка сервера. Попробуйте позже.'));
+            }
+            await basketService.addToBasket(userId, deviceId, quantity);
+            return res.json({ message: 'Препарат добавлен в корзину' });
+        } catch(e) {
+            return next(ApiError.internal(e));
         }
-        
-        return res.json({ message: 'Устройство добавлено в корзину' });
     }
 
-    async removeFromBasket(req, res) {
-        const userId = req.user.data.id;
-        const { deviceId } = req.body;
-    
-        const basket = await Basket.findOne({ where: { userId } });
-    
-        if (!basket) {
-            return res.status(404).json({ message: 'Корзина не найдена' });
-        }
-    
-        const basketDevice = await BasketDevice.findOne({
-            where: {
-                basketId: basket.id,
-                deviceId
+    async removeFromBasket(req, res, next) {
+        try {
+            const userId = req.user.data.id;
+            const { deviceId } = req.body;
+            if (!userId) {
+                return next(ApiError.badRequest('Пользователь не зарегистрирован'));
             }
-        });
-    
-        if (basketDevice) {
-            await BasketDevice.destroy({ where: { id: basketDevice.id } });
-            return res.json({ message: 'Устройство полностью удалено из корзины' });
+            if (!deviceId) {
+                return next(ApiError.notFound('Ошибка сервера. Попробуйте позже.'));
+            }
+            await basketService.removeFromBasket(userId, deviceId);
+            return res.json({ message: 'Препарат удален из корзины' });
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
-    
-        return res.status(404).json({ message: 'Устройство не найдено в корзине' });
     }    
 
-    async clearBasket(req, res) {
-        const userId = req.user.data.id;
-        const basket = await Basket.findOne({ where: { userId } });
-
-        if (basket) {
-            await BasketDevice.destroy({ where: { basketId: basket.id } });
+    async clearBasket(req, res, next) {
+        try {
+            const userId = req.user.data.id;
+            if (!userId) {
+                return next(ApiError.badRequest('Пользователь не зарегистрирован'));
+            }
+            await basketService.clearOneBasket(userId);
             return res.json({ message: 'Корзина очищена' });
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
-
-        return next(ApiError.badRequest('Корзина не найдена'));
     }
     
     async updateBasketItem(req, res) {
-        const userId = req.user.data.id;
-        const { deviceId, quantity } = req.body;
-    
-        const basket = await Basket.findOne({ where: { userId } });
-    
-        if (!basket) {
-            return res.status(404).json({ message: 'Корзина не найдена' });
-        }
-    
-        const basketDevice = await BasketDevice.findOne({
-            where: {
-                basketId: basket.id,
-                deviceId
+        try {
+            const userId = req.user.data.id;
+            const { deviceId, quantity } = req.body;
+            if (!userId) {
+                return next(ApiError.badRequest('Пользователь не зарегистрирован'));
             }
-        });
-    
-        if (basketDevice) {
-            if (quantity <= 0) {
-                await BasketDevice.destroy({ where: { id: basketDevice.id } });
-                return res.json({ message: 'Устройство удалено из корзины' });
+            if (!deviceId || !quantity) {
+                return next(ApiError.notFound('Ошибка сервера. Попробуйте позже.'));
             }
-    
-            basketDevice.quantity = quantity;
-            await basketDevice.save();
+            await basketService.updateBasketItem(userId, deviceId, quantity);
             return res.json({ message: 'Количество обновлено' });
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
-    
-        return res.status(404).json({ message: 'Устройство не найдено в корзине' });
     }
     
 }

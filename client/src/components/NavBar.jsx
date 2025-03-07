@@ -8,9 +8,12 @@ import { NavLink } from 'react-router-dom';
 import { ADMIN_ROUTE, BASKET_ROUTE, HISTORY_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/const';
 import { Context } from '../main';
 import { observer } from 'mobx-react-lite';
+import Tooltip  from './ToolTip';
 
 const NavBar = observer(() => {
   const [isOpenHamburger, setIsOpenHamburger] = useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipMessage, setTooltipMessage] = useState('');
   const toggleHamburger = () => {
     setIsOpenHamburger(prev => !prev);
   };
@@ -23,9 +26,21 @@ const NavBar = observer(() => {
     window.location.reload();  
   }
 
+  const handleNotAuth = () => {
+    setTooltipMessage(`Для начала нужно подтвердить почту.`);
+    setTooltipVisible(true);
+  }
+
   return (
-    <header className="w-full bg-amber-50 text-orange-600 relative">
-      <ul className="flex container mx-auto py-4">
+    <header className="w-full bg-amber-50 relative">
+      {tooltipVisible && (
+        <Tooltip
+          message={tooltipMessage} 
+          duration={3000} 
+          onClose={() => setTooltipVisible(false)} 
+        />
+      )}
+      <ul className="flex container mx-auto text-orange-600 py-4">
         <NavLink to={SHOP_ROUTE} className='text-3xl font-thin'>
             <MdLocalPharmacy className='inline-block mx-1 -mt-1' />БЛекарство
         </NavLink>
@@ -40,12 +55,25 @@ const NavBar = observer(() => {
               <NavLink to={SHOP_ROUTE} onClick={logOut} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
                 <FaSignOutAlt className='inline-block mx-1' />Выйти
               </NavLink>
-              <NavLink to={BASKET_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
-                <FaShoppingCart className='inline-block mx-1' />Корзина
-              </NavLink>
-              <NavLink to={HISTORY_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
-                <FaHistory className='inline-block mx-1' />История заказов
-              </NavLink>
+              {user.isActivated ?
+              <>
+                <NavLink to={BASKET_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                  <FaShoppingCart className='inline-block mx-1' />Корзина
+                </NavLink>
+                <NavLink to={HISTORY_ROUTE} className="bg-amber-200 py-1.5 px-3 rounded-sm shadow-md">
+                  <FaHistory className='inline-block mx-1' />История заказов
+                </NavLink>
+              </>
+                :
+              <>
+                <button className="bg-slate-400 text-slate-100 py-1.5 px-3 rounded-sm shadow-md" onClick={handleNotAuth}>
+                  <FaShoppingCart className='inline-block mx-1' />Корзина
+                </button>
+                <button className="bg-slate-400 text-slate-100 py-1.5 px-3 rounded-sm shadow-md" onClick={handleNotAuth}>
+                  <FaHistory className='inline-block mx-1' />История заказов
+                </button>
+              </>
+              }
             </>
           ) : (
             <>

@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
 import { createBrand } from '../http/deviceAPI';
+import Tooltip from './ToolTip';
 
 export const CreateBrand = ({ isOpen, onClose }) => {
     const [brandName, setBrandName] = useState('');
     const [imgFile, setImgFile] = useState(null);
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');
 
     const handleAddBrand = async () => {
         const formData = new FormData();
-        formData.append('name', brandName);
-        
-        if (imgFile) {
-            formData.append('img', imgFile); // Добавляем изображение только если оно выбрано
+        if (imgFile && brandName) {
+            formData.append('img', imgFile);
+            formData.append('name', brandName);
+        } else {
+            setTooltipMessage(`Произошла ошибка. Обязательные данные не введены.`);
+            return setTooltipVisible(true);
         }
-    
         try {
-            await createBrand(formData); // Отправляем FormData на сервер
+            await createBrand(formData);
             setBrandName('');
             setImgFile(null);
-            onClose(); // Закрываем модальное окно после успешного добавления
-        } catch (error) {
-            console.error('Ошибка при добавлении бренда:', error);
+            onClose();
+            window.location.reload();
+        } catch (e) {
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipVisible(true);
         }
     };
     
@@ -28,6 +34,13 @@ export const CreateBrand = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        {tooltipVisible && (
+            <Tooltip 
+                message={tooltipMessage} 
+                duration={3000} 
+                onClose={() => setTooltipVisible(false)} 
+            />
+        )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
                 <span 
                     className="cursor-pointer text-lg float-right" 

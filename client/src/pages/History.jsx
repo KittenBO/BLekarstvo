@@ -4,8 +4,9 @@ import { Context } from '../main';
 import { getHistory } from '../http/historyAPI';
 import { fetchOneDevice, fetchBrands, fetchTypes } from '../http/deviceAPI';
 import { AddRatingModal } from '../components/AddRatingModal';
+import { observer } from 'mobx-react-lite';
 
-const History = () => {
+const History = observer(() => {
     const [orders, setOrders] = useState([]);
     const { device: deviceStore } = useContext(Context);
     const [devicesInfo, setDevicesInfo] = useState({});
@@ -91,6 +92,6 @@ const History = () => {
             )}
         </div>
     );
-};
+});
 
 export default History;

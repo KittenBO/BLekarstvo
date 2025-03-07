@@ -15,7 +15,7 @@ class userController {
 
             return res.json(userData);
         } catch(error){
-            return next(ApiError.badRequest(`${error}`))
+            return next(ApiError.internal(`${error}`))
         }
     }
 
@@ -25,7 +25,7 @@ class userController {
             await userService.activate(activationLink);
             return res.redirect(process.env.CLIENT_URL);
         } catch(error){
-            return next(ApiError.badRequest(`${error}`))
+            return next(ApiError.internal(`${error}`))
         }
     }
 
@@ -39,8 +39,7 @@ class userController {
             });
             return res.json(userData);
         } catch (error) {
-            console.error('Ошибка при логине:', error);
-            return next(ApiError.badRequest(`${error}`));
+            return next(ApiError.internal(`${error}`));
         }
     }
     
@@ -52,7 +51,7 @@ class userController {
             res.clearCookie('RefreshToken');
             return res.json(token);
         } catch(error) {
-            return next(ApiError.badRequest(`${error}`)) 
+            return next(ApiError.internal(`${error}`)) 
         }
 
     }

@@ -1,15 +1,26 @@
-import { Type } from '../models/models.js';
 import { ApiError } from '../error/apiError.js';
+import brandTypeService from '../service/brandTypeService.js';
 class typeController {
-    async create(req, res) {
-        const {name} = req.body;
-        const type = await Type.create({name});
-        return res.json(type);
+    async create(req, res, next) {
+        try {
+            const {name} = req.body;
+            if (!name) {
+                return next(ApiError.badRequest('Название не указанно'));
+            } 
+            const type = await brandTypeService.createType(name);
+            return res.json(type);
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }
     }
 
     async getAll(req, res) {
-        const types = await Type.findAll();
-        return res.json(types);
+        try {
+            const types = await brandTypeService.getAllTypes();
+            return res.json(types);
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }
     }
 }
 

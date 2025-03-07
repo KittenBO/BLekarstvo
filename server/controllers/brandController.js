@@ -1,31 +1,31 @@
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { Brand } from '../models/models.js';
 import { ApiError } from '../error/apiError.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import brandTypeService from '../service/brandTypeService.js';
 
 class brandController {
     async create(req, res, next) {
         try {
             const { name } = req.body;
+            if(!req.files || !req.files.img) {
+                return next(ApiError.badRequest('Не вставленно изображение'));
+            }
             const { img } = req.files;
-
-            let FileName = uuidv4() + '.jpg';
-            img.mv(path.resolve(__dirname, '..', 'static', FileName));
-
-            const brand = await Brand.create( {name, img: FileName} );
+            if (!name) {
+                return next(ApiError.badRequest('Название не указанно'));
+            }        
+            const brand = await brandTypeService.createBrand(name, img);
             return res.json(brand);
-        } catch(e) {
-            next(ApiError.internal(e.message));
-        }
+        } catch (e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        } 
     }
 
     async getAll(req, res) {
-        const brands = await Brand.findAll();
-        return res.json(brands);
+        try {
+            const brands = await brandTypeService.getAllBrands();
+            return res.json(brands);
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }
     }
 }
 

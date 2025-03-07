@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { addRating } from '../http/ratingAPI';
+import { useContext } from 'react';
+import { Context } from '../main';
+import Tooltip from './ToolTip';
 
 export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
     if (!isOpen) return null;
 
+    const { user } = useContext(Context);
+
     const [rating, setRating] = useState(info.rating);
     const [hoverRating, setHoverRating] = useState(0);
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipMessage, setTooltipMessage] = useState('');
 
     const handleMouseOver = (index) => {
         setHoverRating(index + 1);
@@ -19,35 +26,29 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
     const handleClick = (index) => {
         setRating(index + 1);
     };
-
-    function parseJwt(token) {
-        var base64Url = token.split('.');
-        var base64 = base64Url[1].replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-    
-        return JSON.parse(jsonPayload);
-    };
-    
-    const token = localStorage.getItem('token');
-    const decodedToken = parseJwt(token);
-    const userId = decodedToken.id;
+    const userId = user.user.id;
     
 
     const handleAddRating = async () => {
         try {
             await addRating(info.id, rating, userId);
-            console.log(userId)
             onClose();
             window.location.reload();
-        } catch (error) {
-            console.error('Ошибка при добавлении рейтинга:', error);
+        } catch (e) {
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
+            setTooltipVisible(true);
         }
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        {tooltipVisible && (
+            <Tooltip 
+                message={tooltipMessage} 
+                duration={3000} 
+                onClose={() => setTooltipVisible(false)} 
+            />
+        )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
                 <span 
                     className="cursor-pointer text-lg float-right" 

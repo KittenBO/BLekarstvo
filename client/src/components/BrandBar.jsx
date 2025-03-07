@@ -3,8 +3,6 @@ import Slider from 'react-slick';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { Context } from '../main';
-
-// Импортируйте стили здесь или в вашем основном файле стилей
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -20,7 +18,6 @@ export const BrandBar = observer(() => {
         }
     };
 
-    // Настройки слайдера
     const settings = {
         dots: true,
         infinite: true,
@@ -73,6 +70,15 @@ export const BrandBar = observer(() => {
                     </div>
                 ))}
             </Slider>
+            {device.selectedBrand.name && !device.selectedType.name &&
+                <h1 className='font-serif text-gray-700'>Показаны товары только от бренда: {device.selectedBrand.name}</h1>
+            }
+            {device.selectedType.name && !device.selectedBrand.name &&
+                <h1 className='font-serif text-gray-700'>Показаны товары только от: {device.selectedType.name}</h1>
+            }
+            {device.selectedType.name && device.selectedBrand.name &&
+                <h1 className='font-serif text-gray-700'>Показаны товары только от: {device.selectedType.name} и бренда: {device.selectedBrand.name}</h1>
+            }
         </div>
     );
 });

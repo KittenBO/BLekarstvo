@@ -35,7 +35,6 @@ const EditDevice = ({ isOpen, onClose, device }) => {
         }
     }, [isOpen, device]);
 
-    // Обработчики событий
     const toggleDropdownType = () => {
         setIsDropdownTypeOpen(prev => !prev);
     };
@@ -84,11 +83,10 @@ const EditDevice = ({ isOpen, onClose, device }) => {
 
         try {
             await putDevice(device.id, formData);
-            console.log('Устройство обновлено');
             onClose();
-            navigate(SHOP_ROUTE);
+            window.location.reload();
         } catch (e) {
-            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
+            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
             setTooltipVisible(true);
         }
     };
