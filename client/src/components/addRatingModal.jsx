@@ -34,7 +34,7 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
             await addRating(info.id, rating, userId);
             onClose();
         } catch (e) {
-            setTooltipMessage(`Произошла ошибка. Попробуйте позже.`);
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
         }
     };
