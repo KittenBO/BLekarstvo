@@ -3,7 +3,7 @@ import { FaPen } from 'react-icons/fa';
 import { Context } from '../main';
 import { getHistory } from '../http/historyAPI';
 import { fetchOneDevice, fetchBrands, fetchTypes } from '../http/deviceAPI';
-import { AddRatingModal } from '../components/AddRatingModal';
+import { AddRatingModal } from '../components/addRatingModal';
 import { observer } from 'mobx-react-lite';
 
 const History = observer(() => {
