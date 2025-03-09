@@ -32,7 +32,7 @@ const Tooltip = ({ message, duration, onClose }) => {
         <div className="fixed inset-0 flex items-end justify-center">
             <div className="bg-white shadow-lg p-6 rounded-xl w-full max-w-md mb-8 relative">
                 <div
-                    className="absolute rounded-xl top-0 left-0 h-2 bg-amber-600"
+                    className="absolute rounded-xl top-0 left-0 h-2 bg-amber-200"
                     style={{
                         width: `${progress}%`,
                         transition: 'width 0.1s linear',

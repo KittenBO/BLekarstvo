@@ -16,9 +16,8 @@ export const CreateType = observer(({ isOpen, onClose }) => {
             }
             createType({name: typeName}).then(data => setTypeName(''));
             onClose();
-            window.location.reload();
         } catch (e) {
-            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
         }
     };

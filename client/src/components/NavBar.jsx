@@ -22,8 +22,7 @@ const NavBar = observer(() => {
   const nodeRef = useRef(null);
 
   const logOut = () => {
-    user.logout();
-    window.location.reload();  
+    user.logout(); 
   }
 
   const handleNotAuth = () => {

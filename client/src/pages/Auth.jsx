@@ -30,12 +30,12 @@ const Auth = observer(() => {
                     return;
                 }
                 data = await user.registration(email, password)
-                setTooltipMessage(data.message || 'Проверьте вашу почту для подтверждения.');
+                setTooltipMessage('Проверьте вашу почту для подтверждения.');
             }
             navigate(SHOP_ROUTE);
              
         } catch (e) {
-            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message || e.message}`);
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже.`);
             setTooltipVisible(true);
         }
     };
@@ -119,7 +119,7 @@ const Auth = observer(() => {
                             onChange={e => setConfirmPassword(e.target.value)}
                         />
                         <button 
-                            className="bg-amber-200 font-medium py=2 px=4 rounded-lg shadow-md w-full"
+                            className="bg-amber-200 font-medium py-2 px-4 rounded-lg shadow-md w-full"
                             onClick={click}
                         >
                             Зарегистрироваться

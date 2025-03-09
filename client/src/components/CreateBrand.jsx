@@ -22,9 +22,8 @@ export const CreateBrand = ({ isOpen, onClose }) => {
             setBrandName('');
             setImgFile(null);
             onClose();
-            window.location.reload();
         } catch (e) {
-            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
         }
     };

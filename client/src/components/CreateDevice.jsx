@@ -52,7 +52,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
             setInfo([]);
             setSelectedType(null);
             setSelectedBrand(null);
-            window.location.reload();
+            onClose();
         } catch(e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
