@@ -125,7 +125,7 @@ const EditDevice = ({ isOpen, onClose, device }) => {
 
                 <label className="block mt-4">Изображение:</label>
                 {device.img && (
-                    <img className='w-full h-32 object-contain mx-auto' src={import.meta.env.VITE_API_URL + device.img} alt={device.name} />
+                    <img className='w-full h-32 object-contain mx-auto' src={import.meta.env.VITE_STATIC_API_URL + device.img} alt={device.name} />
                 )}
                 <label className="block mt-4">Новое изображение:</label>
                 <input 

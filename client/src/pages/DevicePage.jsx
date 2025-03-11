@@ -78,7 +78,7 @@ const DevicePage = observer(() => {
                 />
             )}
             <div className="w-full sm:w-1/2 pr-4">
-                <img src={import.meta.env.VITE_API_URL + device.img} alt={device.name} className="w-2/3 mx-auto" />
+                <img src={import.meta.env.VITE_STATIC_API_URL + device.img} alt={device.name} className="w-2/3 mx-auto" />
             </div>
             <div className="w-full sm:w-1/2 p-6 m-2 bg-white rounded-lg shadow-md h-auto mx-auto">
                 <h1 className="text-xl font-bold">{device.name}</h1>

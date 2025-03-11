@@ -62,7 +62,7 @@ export const BrandBar = observer(() => {
                     >
                         <div className="shadow-md text-center w-[150px] h-[75px]">
                             <img 
-                                src={import.meta.env.VITE_API_URL + brand.img} 
+                                src={import.meta.env.VITE_STATIC_API_URL + brand.img} 
                                 alt={brand.name} 
                                 className="w-full h-full object-cover"
                             />

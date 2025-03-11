@@ -15,7 +15,7 @@ export const DeviceItem = observer(({ device }) => {
 
     return (  
         <div className="border p-4 rounded-lg shadow-md text-center flex flex-col flex-grow">
-            <img className='w-full h-32 object-contain mx-auto' src={import.meta.env.VITE_API_URL + device.img} alt={device.name} />
+            <img className='w-full h-32 object-contain mx-auto' src={import.meta.env.VITE_STATIC_API_URL + device.img} alt={device.name} />
             <h2 className="mt-2 text-lg font-semibold overflow-hidden whitespace-nowrap text-ellipsis" style={{ maxWidth: '100%' }}>
                 {device.name}
             </h2>
