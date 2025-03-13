@@ -56,7 +56,7 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
                 </span>
                 <h2 className="text-center text-xl text-orange-600 font-semibold">Оценить данный товар?</h2>
                 <img
-                    src={import.meta.env.VITE_API_URL + info.img}
+                    src={import.meta.env.VITE_STATIC_API_URL + info.img}
                     alt={info.name}
                     className="w-1/2 mx-auto my-4"
                 />
@@ -66,7 +66,7 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
                         <p className="flex items-center">
                             Бренд:
                             <img
-                                src={import.meta.env.VITE_API_URL + deviceStore.brands.find(brand => brand.id === info.brandId)?.img}
+                                src={import.meta.env.VITE_STATIC_API_URL + deviceStore.brands.find(brand => brand.id === info.brandId)?.img}
                                 alt={deviceStore.brands.find(brand => brand.id === info.brandId)?.name || 'Не указано'}
                                 className="w-12 h-8 sm:w-16 sm:h-9 ml-2"
                             />
