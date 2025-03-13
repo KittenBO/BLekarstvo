@@ -14,7 +14,7 @@ export const DeviceItem = observer(({ device }) => {
     const brandName = deviceStore.brands.find(brand => brand.id === device.brandId)?.name || 'Не указано';
 
     return (  
-        <div className="border p-4 rounded-lg shadow-md text-center flex flex-col flex-grow">
+        <div className="w-2/3 sm:w-full mx-auto border p-4 rounded-lg shadow-md text-center flex flex-col flex-grow">
             <img className='w-full h-32 object-contain mx-auto' src={import.meta.env.VITE_STATIC_API_URL + device.img} alt={device.name} />
             <h2 className="mt-2 text-lg font-semibold overflow-hidden whitespace-nowrap text-ellipsis" style={{ maxWidth: '100%' }}>
                 {device.name}

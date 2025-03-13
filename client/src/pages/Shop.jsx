@@ -31,8 +31,8 @@ const Shop = observer(() => {
     return (  
         <>
             <div className="flex flex-wrap container mx-auto">
-                <TypeBar className="w-1/6" />
-                <div className="w-5/6">
+                <TypeBar className="w-full 2xl:w-1/6" />
+                <div className="w-full 2xl:w-5/6 mx-auto">
                     <BrandBar/>
                     <DeviceList/>
                     <Pages/>

@@ -9,7 +9,7 @@ export const DeviceList= observer(() => {
 
     return ( 
         <>
-        <div className="w-full grid grid-cols-4 gap-8">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {device.devices.map(device => 
                 <DeviceItem key={device.id} device={device} />
             )}

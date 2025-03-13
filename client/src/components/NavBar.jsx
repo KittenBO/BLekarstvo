@@ -43,7 +43,7 @@ const NavBar = observer(() => {
         <NavLink to={SHOP_ROUTE} className='text-3xl font-thin'>
             <MdLocalPharmacy className='inline-block mx-1 -mt-1' />БЛекарство
         </NavLink>
-        <div className='hidden md:flex text-xs lg:text-base gap-20 ml-auto items-center'>
+        <div className='hidden lg:flex text-xs lg:text-base gap-20 ml-auto items-center'>
           {user.isAuth ? (
             <>
               {user.role === "ADMIN" && (
@@ -82,7 +82,7 @@ const NavBar = observer(() => {
             </>
           )}
         </div>
-        <div className="flex md:hidden relative items-center ml-auto">
+        <div className="flex lg:hidden relative items-center ml-auto">
           <RxHamburgerMenu className='text-xl mr-8' onClick={toggleHamburger} />
           <CSSTransition 
             in={isOpenHamburger} 
@@ -91,27 +91,49 @@ const NavBar = observer(() => {
             unmountOnExit
             nodeRef={nodeRef}
           >
-            <ul ref={nodeRef} className="absolute text-sm mt-5 bg-amber-50 top-full right-0 shadow-md rounded-md p-4 w-60 z-10">
+            <ul ref={nodeRef} className="absolute text-sm mt-5 bg-amber-50 top-full right-5 sm:right-0 shadow-md rounded-md p-4 w-60 z-10">
               {user.isAuth ? (
                 <>
                   {user.role === "ADMIN" && (
-                    <NavLink to={ADMIN_ROUTE} className="flex items-center">
-                      <FaCog className='inline-block mx=1' />Админ-панель
+                  <>
+                    <NavLink to={ADMIN_ROUTE} className="flex items-center" onClick={toggleHamburger}>
+                      <FaCog className='inline-block mx-1 text-lg sm:text-base' />Админ-панель
                     </NavLink>
+                    <li className="border-t border-grayProfile my-3 sm:my-1"></li>
+                  </>
                   )}
-                  <li className="border-t border-grayProfile my=1"></li>
                   <NavLink to={SHOP_ROUTE} onClick={logOut}>
-                    <FaSignOutAlt className='inline-block mx=1' />Выйти
+                    <FaSignOutAlt className='inline-block mx-1 text-lg sm:text-base' />Выйти
                   </NavLink>
-                  <li className="border-t border-grayProfile my=1"></li>
-                  <NavLink to={BASKET_ROUTE}>
-                    <FaShoppingCart className='inline-block mx=1' />Корзина
-                  </NavLink>
+                  <li className="border-t border-grayProfile my-3 sm:my-1"></li>
+                  {user.isActivated ? (
+                  <>
+                    <NavLink to={BASKET_ROUTE} onClick={toggleHamburger}>
+                      <FaShoppingCart className='inline-block mx-1 text-lg sm:text-base' />Корзина
+                    </NavLink>
+                    <li className="border-t border-grayProfile my-3 sm:my-1"></li>
+                    <NavLink to={HISTORY_ROUTE} onClick={toggleHamburger}>
+                      <FaHistory className='inline-block mx-1 text-lg sm:text-base' />История заказов
+                    </NavLink>
+                  </>
+                  )
+                  :
+                  (
+                  <>
+                    <button className="text-slate-400" onClick={handleNotAuth}>
+                      <FaShoppingCart className='inline-block mx-1 text-lg sm:text-base'/>Корзина
+                    </button>
+                    <li className="border-t border-grayProfile my-3 sm:my-1"></li>
+                    <button className="text-slate-400" onClick={handleNotAuth}>
+                      <FaHistory className='inline-block mx-1 text-lg sm:text-base'/>История заказов
+                    </button>
+                  </>
+                  )}
                 </>
               ) : (
                 <>
                   <NavLink to={LOGIN_ROUTE}>
-                    <CgProfile className='inline-block mx=1' />Авторизация/Регистрация
+                    <CgProfile className='inline-block mx-1' />Авторизация/Регистрация
                   </NavLink>
                 </>
               )}

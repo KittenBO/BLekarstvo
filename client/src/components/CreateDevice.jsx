@@ -106,7 +106,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                 onClose={() => setTooltipVisible(false)} 
             />
         )}
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white p-6 mx-2 sm:mx-0 rounded-lg shadow-lg w-full sm:w-1/2 md:w-1/3 max-h-[90vh] overflow-y-auto">
                 <span 
                     className="cursor-pointer text-lg float-right" 
                     onClick={onClose}

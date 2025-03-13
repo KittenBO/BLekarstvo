@@ -80,7 +80,7 @@ const DevicePage = observer(() => {
             <div className="w-full sm:w-1/2 pr-4">
                 <img src={import.meta.env.VITE_STATIC_API_URL + device.img} alt={device.name} className="w-2/3 mx-auto" />
             </div>
-            <div className="w-full sm:w-1/2 p-6 m-2 bg-white rounded-lg shadow-md h-auto mx-auto">
+            <div className="w-full sm:w-1/2 mx-2 sm:mx-0 p-6 m-2 bg-white rounded-lg shadow-md h-auto">
                 <h1 className="text-xl font-bold">{device.name}</h1>
                 <div className="flex items-center">
                     <span className="text-yellow-500 flex text-sm">
@@ -125,7 +125,7 @@ const DevicePage = observer(() => {
                     </div>
                 </div>
 
-                <div className='mt-6 flex justify-between text-xs sm:text-base'>
+                <div className='mt-6 flex justify-between text-base'>
                     {device.info.map(info =>
                         <div key={info.id}>
                             <h3 className='font-bold text-orange-600'>{info.title}</h3>
@@ -148,10 +148,6 @@ const DevicePage = observer(() => {
                         >
                             <FaTrash />
                         </button>
-                    </div>
-                    <div className="flex items-center">
-                        <FaRegStar className="mr-1" />
-                        <span>{device.rating}</span>
                     </div>
                 </div>
                 }                
