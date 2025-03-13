@@ -27,7 +27,6 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
         setRating(index + 1);
     };
     const userId = user.user.id;
-    
 
     const handleAddRating = async () => {
         try {
@@ -41,53 +40,56 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        {tooltipVisible && (
-            <Tooltip 
-                message={tooltipMessage} 
-                duration={3000} 
-                onClose={() => setTooltipVisible(false)} 
-            />
-        )}
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-                <span 
-                    className="cursor-pointer text-lg float-right" 
+            {tooltipVisible && (
+                <Tooltip
+                    message={tooltipMessage}
+                    duration={3000}
+                    onClose={() => setTooltipVisible(false)}
+                />
+            )}
+            <div className="bg-white mx-4 p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
+                <span
+                    className="cursor-pointer text-lg float-right"
                     onClick={onClose}
                 >
                     &times;
                 </span>
                 <h2 className="text-center text-xl text-orange-600 font-semibold">Оценить данный товар?</h2>
-                <img 
-                    src={import.meta.env.VITE_API_URL + info.img} 
-                    alt={info.name} 
-                    className="w-1/2 mx-auto" 
+                <img
+                    src={import.meta.env.VITE_API_URL + info.img}
+                    alt={info.name}
+                    className="w-1/2 mx-auto my-4"
                 />
                 <div className="flex-grow">
                     <h2 className="text-xl font-semibold text-center">{info.name}</h2>
-                    <div className="flex justify-between mx-10 text-lg">
-                        <p>Бренд:
+                    <div className="flex flex-col sm:flex-row justify-between items-center mx-4 sm:mx-10 text-lg mt-4">
+                        <p className="flex items-center">
+                            Бренд:
                             <img
                                 src={import.meta.env.VITE_API_URL + deviceStore.brands.find(brand => brand.id === info.brandId)?.img}
                                 alt={deviceStore.brands.find(brand => brand.id === info.brandId)?.name || 'Не указано'}
-                                className='w-1/6 inline-block'
+                                className="w-12 h-8 sm:w-16 sm:h-9 ml-2"
                             />
                         </p>
-                        <p className="whitespace-nowrap">От чего: {deviceStore.types.find(type => type.id === info.typeId)?.name || 'Не указано'}</p>
+                        <p className="whitespace-nowrap mt-4 sm:mt-0">
+                            От чего: {deviceStore.types.find(type => type.id === info.typeId)?.name || 'Не указано'}
+                        </p>
                     </div>
                 </div>
-                <span className="flex text-yellow-500 justify-center text-7xl mx-auto">
+                <div className="flex justify-center text-yellow-500 text-4xl sm:text-5xl mt-6">
                     {Array.from({ length: 5 }, (_, index) => (
-                        <FaStar 
-                            key={index} 
-                            className={`mr-1 ${index < (hoverRating || rating) ? 'text-yellow-500' : 'text-gray-300'}`} 
-                            onMouseOver={() => handleMouseOver(index)} 
-                            onMouseLeave={handleMouseLeave} 
+                        <FaStar
+                            key={index}
+                            className={`mr-1 ${index < (hoverRating || rating) ? 'text-yellow-500' : 'text-gray-300'}`}
+                            onMouseOver={() => handleMouseOver(index)}
+                            onMouseLeave={handleMouseLeave}
                             onClick={() => handleClick(index)}
                         />
                     ))}
-                </span>
+                </div>
                 <span className="flex justify-center text-5xl text-orange-600 font-semibold font-serif my-5">{rating}</span>
-                <button 
-                    className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full"
+                <button
+                    className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full mt-4"
                     onClick={handleAddRating}
                 >
                     Оценить

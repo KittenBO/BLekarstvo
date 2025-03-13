@@ -102,7 +102,7 @@ const EditDevice = ({ isOpen, onClose, device }) => {
                 onClose={() => setTooltipVisible(false)} 
             />
         )}
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white p-6 mx-2 sm:mx-0 rounded-lg shadow-lg w-full md:w-1/2 max-h-[90vh] overflow-y-auto">
                 <span className="cursor-pointer text-lg float-right" onClick={onClose}>&times;</span>
                 <h2 className="text-center text-xl text-orange-600 font-semibold">Обновить устройство</h2>
 
