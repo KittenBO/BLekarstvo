@@ -35,18 +35,17 @@ export const CreateBrand = ({ isOpen, onClose }) => {
 
     const handleAddBrand = async () => {
         const formData = new FormData();
-        if (imgFile && brandName) {
-            formData.append('img', imgFile);
-            formData.append('name', brandName);
-        } else {
-            setTooltipMessage(`Произошла ошибка. Обязательные данные не введены.`);
-            return setTooltipVisible(true);
-        }
         try {
-            await createBrand(formData);
-            setBrandName('');
-            setImgFile(null);
-            onClose();
+            if (!imgFile || !brandName) {
+                setTooltipMessage(`Произошла ошибка. Обязательные данные не введены.`);
+                return setTooltipVisible(true);
+            } else {
+                formData.append('img', imgFile);
+                formData.append('name', brandName);
+                createBrand(formData).finally(window.location.reload());
+                setBrandName('');
+                setImgFile(null);
+            }
         } catch (e) {
             setTooltipMessage(e);
             setTooltipVisible(true);
@@ -55,15 +54,13 @@ export const CreateBrand = ({ isOpen, onClose }) => {
 
     const handleDeleteBrand = async () => {
         try {
-            if (selectedBrand) {
-                const brandId = selectedBrand.id;
-                await deleteBrand(brandId);
-                setSelectedBrand('');
-                setChoiceModal('Create');
-                onClose();
-            } else {
+            if (!selectedBrand) {
                 setTooltipMessage(`Произошла ошибка. Обязательные данные не введены.`);
                 return setTooltipVisible(true);
+            } else {
+                const brandId = selectedBrand.id;
+                deleteBrand(brandId).finally(window.location.reload());
+                setSelectedBrand('');
             }
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);

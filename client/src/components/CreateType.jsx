@@ -39,8 +39,7 @@ export const CreateType = observer(({ isOpen, onClose }) => {
                 setTooltipMessage(`Произошла ошибка. Название не указанно`);
                 return setTooltipVisible(true); 
             }
-            createType({name: typeName}).then(data => setTypeName(''));
-            onClose();
+            createType({name: typeName}).then(data => setTypeName('')).finally(window.location.reload());
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
@@ -48,22 +47,20 @@ export const CreateType = observer(({ isOpen, onClose }) => {
     };
 
     const handleDeleteType = async () => {
-            try {
-                if (selectedType) {
-                    const typeId = selectedType.id;
-                    await deleteType(typeId);
-                    setSelectedType('');
-                    setChoiceModal('Create');
-                    onClose();
-                } else {
-                    setTooltipMessage(`Произошла ошибка. Обязательные данные не введены.`);
-                    return setTooltipVisible(true);
-                }
-            } catch (e) {
-                setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
-                setTooltipVisible(true);
+        try {
+            if (!selectedType) {
+                setTooltipMessage(`Произошла ошибка. Название не указанно`);
+                return setTooltipVisible(true); 
             }
-        };
+            const typeId = selectedType.id;
+            deleteType(typeId).finally(window.location.reload());
+            setSelectedType('');
+        } catch (e) {
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
+            setTooltipVisible(true);
+        }
+    };
+
 
     if (!isOpen) return null;
 
