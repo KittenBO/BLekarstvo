@@ -80,6 +80,9 @@ export const CreateDevice = ({ isOpen, onClose }) => {
     const filteredBrands = device.brands.filter(brand =>
         brand.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    const filteredTypes = device.types.filter(type =>
+        type.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const addInfoField = () => {
         if (info.length < 3) { 
@@ -121,7 +124,8 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                     value={deviceName} 
                     onChange={(e) => setDeviceName(e.target.value)} 
                     className="border p-2 w-full mb-4"
-                />... <label className="block mt-4">Цена:</label>
+                />
+                <label className="block mt-4">Цена:</label>
                 <input 
                     type="number" 
                     value={price} 
@@ -142,7 +146,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                     className="bg-amber-200 text-orange-600 py-1.5 px-3 rounded w-full my-4"
                     onClick={addInfoField}
                 >
-                    Добавить новое свойство (максимум 3)
+                    Добавить новое свойство
                 </button>
 
                 {info.map(i => (
@@ -169,7 +173,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                             <textarea
                                 value={i.description}
                                 onChange={(e) => updateInfoField(i.id, 'description', e.target.value)}
-                                rows={3}
+                                rows={6}
                                 className="border p-2 w-full mb-2"
                             />
                         </div>
@@ -187,19 +191,31 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                     
                     {isDropdownTypeOpen && (
                         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                            {device.types.map(type => (
-                                <button 
-                                    key={type.id} 
-                                    onClick={() => handleSelectType(type)} 
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                                >
-                                    {type.name}
-                                </button>
-                            ))}
+                            <input
+                                type="text"
+                                placeholder="Поиск..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="border p-2 w-full mb-2"
+                            />
+                            <div className="max-h-60 overflow-y-auto">
+                                {filteredTypes.length > 0 ? (
+                                    filteredTypes.map(type => (
+                                        <button 
+                                            key={type.id} 
+                                            onClick={() => handleSelectType(type)} 
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                        >
+                                            {type.name}
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="px-4 py-2 text-sm text-gray-500">Нет результатов</div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
-
                 <div className="relative">
                     <button 
                         onClick={toggleDropdownBrand} 
@@ -235,7 +251,8 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                             </div>
                         </div>
                     )}
-                </div>... <button 
+                </div> 
+                <button 
                     className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full"
                     onClick={handleAddDevice}
                 >

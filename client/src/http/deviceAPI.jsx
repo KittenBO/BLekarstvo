@@ -9,7 +9,10 @@ export const fetchTypes = async () => {
     const { data } = await $api.get('api/type');
     return data;
 }
-
+export const deleteType = async (id) => {
+    const { data } = await $api.delete('api/type/' + id);
+    return data;
+}
 export const createBrand = async (brand) => {
     const { data } = await $api.post('api/brand', brand);
     return data;
@@ -17,6 +20,10 @@ export const createBrand = async (brand) => {
 
 export const fetchBrands = async () => {
     const { data } = await $api.get('api/brand');
+    return data;
+}
+export const deleteBrand = async (id) => {
+    const { data } = await $api.delete('api/brand/' + id);
     return data;
 }
 

@@ -19,12 +19,25 @@ class brandController {
         } 
     }
 
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             const brands = await brandTypeService.getAllBrands();
             return res.json(brands);
         } catch(e) {
             return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }
+    }
+
+    async delete(req, res, next) {
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return next(ApiError.badRequest('Бренд не указан.'));
+            }
+            await brandTypeService.deleteBrand(id);
+            return;
+        } catch(e) {
+            return next(ApiError.internal(e.message));
         }
     }
 }

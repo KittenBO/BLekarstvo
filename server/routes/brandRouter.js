@@ -6,3 +6,4 @@ export const brandRouter = new Router();
 
 brandRouter.post('/', checkRole('ADMIN'), brandController.create )
 brandRouter.get('/', brandController.getAll )
+brandRouter.delete('/:id', checkRole('ADMIN'), brandController.delete )

@@ -22,6 +22,18 @@ class typeController {
             return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }
     }
+
+    async delete(req, res, next) {
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return next(ApiError.badRequest('Тип не указан.'));
+            }
+        await brandTypeService.deleteType(id);
+        } catch(e) {
+            return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
+        }
+    }
 }
 
 export default new typeController();
