@@ -1,12 +1,13 @@
 import { useEffect, useState, useContext } from 'react';
 import { Context } from '../main';
-import { FaStar, FaRegStar, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaStar, FaEdit, FaTrash } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchOneDevice, fetchBrands, fetchTypes } from '../http/deviceAPI';
 import { deleteDevice } from '../http/deviceAPI'; 
 import DeleteDevice from '../components/DeleteDevice';
 import EditDevice from '../components/EditDevice'; 
 import Tooltip from '../components/ToolTip';
+import DeviceInfo from '../components/DeviceInfo';
 import { SHOP_ROUTE } from '../utils/const';
 import { addToBasket } from '../http/basketAPI';
 import { observer } from 'mobx-react-lite';
@@ -125,13 +126,8 @@ const DevicePage = observer(() => {
                     </div>
                 </div>
 
-                <div className='mt-6 flex justify-between text-base'>
-                    {device.info.map(info =>
-                        <div key={info.id}>
-                            <h3 className='font-bold text-orange-600'>{info.title}</h3>
-                            {info.description}
-                        </div>
-                    )}
+                <div className="mt-6 flex flex-col text-base">
+                    <DeviceInfo info={device.info} />
                 </div>
                 {user.role == 'ADMIN' &&
                 <div className="flex items-center justify-between mt-auto">

@@ -47,40 +47,28 @@ export default class UserStore {
     }
 
     async login(email, password) {
-        try {
-            const response = await AuthService.login(email, password);
-            localStorage.setItem('token', response.data.accessToken); // Исправлено
-            this.setIsAuth(true);
-            this.setUser(response.data.user);
-            this.setRole(response.data.user.role);
-            this.setIsActivated(response.data.user.isActivated);
-        } catch (e) {
-            console.log(e.response?.data?.message);
-        }
+        const response = await AuthService.login(email, password);
+        localStorage.setItem('token', response.data.accessToken);
+        this.setIsAuth(true);
+        this.setUser(response.data.user);
+        this.setRole(response.data.user.role);
+        this.setIsActivated(response.data.user.isActivated);
     }
     
     async registration(email, password) {
-        try {
-            const response = await AuthService.registration(email, password);
-            localStorage.setItem('token', response.data.accessToken); // Исправлено
-            this.setIsAuth(true);
-            this.setUser(response.data.user);
-            this.setRole(response.data.user.role);
-            this.setIsActivated(response.data.user.isActivated);
-        } catch (e) {
-            console.log(e.response?.data?.message);
-        }
+        const response = await AuthService.registration(email, password);
+        localStorage.setItem('token', response.data.accessToken);
+        this.setIsAuth(true);
+        this.setUser(response.data.user);
+        this.setRole(response.data.user.role);
+        this.setIsActivated(response.data.user.isActivated);
     }    
 
     async logout() {
-        try {
-            const responce = await AuthService.logout();
-            localStorage.removeItem('token');
-            this.setIsAuth(false);
-            this.setUser({});
-        } catch(e) {
-            console.log(e.response?.data?.message);
-        }
+        const responce = await AuthService.logout();
+        localStorage.removeItem('token');
+        this.setIsAuth(false);
+        this.setUser({});
     }
 
     async check() {
@@ -92,8 +80,6 @@ export default class UserStore {
             this.setUser(responce.data.user);
             this.setRole(responce.data.user.role);
             this.setIsActivated(responce.data.user.isActivated);
-        } catch(e) {
-            console.log(e.response?.data?.message);
         } finally {
             this.setLoading(false);
         }

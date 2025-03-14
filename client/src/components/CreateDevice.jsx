@@ -121,9 +121,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                     value={deviceName} 
                     onChange={(e) => setDeviceName(e.target.value)} 
                     className="border p-2 w-full mb-4"
-                />
-
-                <label className="block mt-4">Цена:</label>
+                />... <label className="block mt-4">Цена:</label>
                 <input 
                     type="number" 
                     value={price} 
@@ -237,9 +235,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
                             </div>
                         </div>
                     )}
-                </div>
-
-                <button 
+                </div>... <button 
                     className="bg-amber-200 text-orange-600 py-2 px-4 rounded w-full"
                     onClick={handleAddDevice}
                 >

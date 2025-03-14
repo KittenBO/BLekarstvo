@@ -20,24 +20,29 @@ const Auth = observer(() => {
 
     const click = async () => {
         let data;
-        try {
-            if (isLogin) {
+        if (isLogin) {
+            try {
                 data = await user.login(email, password);
-            } else {
+                navigate(SHOP_ROUTE);
+            } catch(e) {
+                setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+                return setTooltipVisible(true);
+            }
+        } else {
+            try {
                 if (password !== confirmPassword) {
                     setTooltipMessage('Пароли не совпадают!');
-                    setTooltipVisible(true);
-                    return;
+                    return setTooltipVisible(true);
                 }
                 data = await user.registration(email, password)
                 setTooltipMessage('Проверьте вашу почту для подтверждения.');
+                return setTooltipVisible(true);
+            } catch(e) {
+                setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+                return setTooltipVisible(true);
             }
-            navigate(SHOP_ROUTE);
-             
-        } catch (e) {
-            setTooltipMessage(`Произошла ошибка. Попробуйте позже.`);
-            setTooltipVisible(true);
-        }
+            
+        }  
     };
 
     return (

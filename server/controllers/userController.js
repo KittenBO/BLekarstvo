@@ -32,6 +32,9 @@ class userController {
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
+            if (!email || !password) {
+                return next(ApiError.badRequest('Не введен email или пароль.'));
+            }
             const userData = await userService.login(email, password);
             res.cookie('RefreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,

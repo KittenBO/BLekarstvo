@@ -44,7 +44,7 @@ class UserService {
         }
         let comparePassword = bcryp.compareSync(password, user.password);
         if (!comparePassword) {
-            throw new Error('Неверный логин или пароль')
+            throw new Error('Неверный email или пароль')
         }
         const userDTO = new userDto(user);
         const tokens = tokenService.generateToken({...userDTO});
