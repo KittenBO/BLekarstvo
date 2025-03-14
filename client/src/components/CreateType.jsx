@@ -39,7 +39,7 @@ export const CreateType = observer(({ isOpen, onClose }) => {
                 setTooltipMessage(`Произошла ошибка. Название не указанно`);
                 return setTooltipVisible(true); 
             }
-            createType({name: typeName}).then(data => setTypeName('')).finally(window.location.reload());
+            createType({name: typeName}).then(window.location.reload());
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);

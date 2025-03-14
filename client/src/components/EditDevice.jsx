@@ -82,7 +82,7 @@ const EditDevice = ({ isOpen, onClose, device }) => {
         formData.append('info', JSON.stringify(info));
 
         try {
-            await putDevice(device.id, formData).finally(window.location.reload());
+            putDevice(device.id, formData).then(window.location.reload())
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
             setTooltipVisible(true);

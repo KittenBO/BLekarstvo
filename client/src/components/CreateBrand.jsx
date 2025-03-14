@@ -42,9 +42,7 @@ export const CreateBrand = ({ isOpen, onClose }) => {
             } else {
                 formData.append('img', imgFile);
                 formData.append('name', brandName);
-                createBrand(formData).finally(window.location.reload());
-                setBrandName('');
-                setImgFile(null);
+                createBrand(formData).then(window.location.reload());
             }
         } catch (e) {
             setTooltipMessage(e);
