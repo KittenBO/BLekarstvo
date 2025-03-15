@@ -12,7 +12,7 @@ export const GetUsers = ({ isOpen, onClose }) => {
             const response = await UserService.fetchUsers();
             setUsers(response.data);
         } catch(e) {
-            setTooltipMessage(`Произошла ошибка. ${e.response?.data?.message}`);
+            setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
         }
     }

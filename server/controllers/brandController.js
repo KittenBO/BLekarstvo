@@ -35,7 +35,7 @@ class brandController {
                 return next(ApiError.badRequest('Бренд не указан.'));
             }
             await brandTypeService.deleteBrand(id);
-            return;
+            return res.json({ message: 'Успешно.' });
         } catch(e) {
             return next(ApiError.internal(e.message));
         }

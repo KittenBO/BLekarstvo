@@ -45,7 +45,7 @@ export const CreateDevice = ({ isOpen, onClose }) => {
             formData.append('brandId', selectedBrand.id);
             formData.append('img', imgFile);
             formData.append('info', JSON.stringify(info));
-            createDevice(formData).then(window.location.reload())
+            createDevice(formData).then(onClose());
         } catch(e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);

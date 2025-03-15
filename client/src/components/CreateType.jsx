@@ -39,7 +39,10 @@ export const CreateType = observer(({ isOpen, onClose }) => {
                 setTooltipMessage(`Произошла ошибка. Название не указанно`);
                 return setTooltipVisible(true); 
             }
-            createType({name: typeName}).then(window.location.reload());
+            createType({name: typeName}).then(() => {
+                fetchTypes().then(data => device.setTypes(data));
+                onClose();
+            });
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
@@ -53,8 +56,11 @@ export const CreateType = observer(({ isOpen, onClose }) => {
                 return setTooltipVisible(true); 
             }
             const typeId = selectedType.id;
-            deleteType(typeId).finally(window.location.reload());
-            setSelectedType('');
+            deleteType(typeId).then(() => {
+                fetchTypes().then(data => device.setTypes(data));
+                setSelectedType('');
+                onClose();
+            });
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);

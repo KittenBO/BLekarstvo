@@ -29,7 +29,8 @@ class typeController {
             if (!id) {
                 return next(ApiError.badRequest('Тип не указан.'));
             }
-        await brandTypeService.deleteType(id);
+            await brandTypeService.deleteType(id);
+            return res.json({ message: 'Успешно.' });
         } catch(e) {
             return next(ApiError.internal('Непредвиденная ошибка. Попробуйте позже'));
         }

@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { Context } from '../main';
+import { observer } from 'mobx-react-lite';
 import { createBrand, fetchBrands, deleteBrand } from '../http/deviceAPI';
 import { FaChevronDown, FaTrash, FaPlus } from 'react-icons/fa';
 import Tooltip from './ToolTip';
 
-export const CreateBrand = ({ isOpen, onClose }) => {
+
+export const CreateBrand = observer(({ isOpen, onClose }) => {
     const { device } = useContext(Context);
     const [brandName, setBrandName] = useState('');
     const [imgFile, setImgFile] = useState(null);
@@ -42,7 +44,10 @@ export const CreateBrand = ({ isOpen, onClose }) => {
             } else {
                 formData.append('img', imgFile);
                 formData.append('name', brandName);
-                createBrand(formData).then(window.location.reload());
+                createBrand(formData).then(() => {
+                    fetchBrands().then(data => device.setBrands(data))
+                    onClose();
+                });
             }
         } catch (e) {
             setTooltipMessage(e);
@@ -57,8 +62,11 @@ export const CreateBrand = ({ isOpen, onClose }) => {
                 return setTooltipVisible(true);
             } else {
                 const brandId = selectedBrand.id;
-                deleteBrand(brandId).finally(window.location.reload());
-                setSelectedBrand('');
+                deleteBrand(brandId).then(() => {
+                    fetchBrands().then(data => device.setBrands(data))
+                    onClose();
+                    setSelectedBrand('');
+                });
             }
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
@@ -185,4 +193,4 @@ export const CreateBrand = ({ isOpen, onClose }) => {
             </div>
         </div>
     );
-};
+});

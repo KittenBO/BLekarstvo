@@ -30,7 +30,7 @@ export const AddRatingModal = ({ isOpen, onClose, info, deviceStore }) => {
 
     const handleAddRating = async () => {
         try {
-            addRating(info.id, rating, userId).then(window.location.reload())
+            addRating(info.id, rating, userId).then(onClose());
         } catch (e) {
             setTooltipMessage(`Произошла ошибка. Попробуйте позже`);
             setTooltipVisible(true);
